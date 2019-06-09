@@ -18,10 +18,16 @@ array, then arraySize contains its size */
     // If this is an array, then size specifies
     // the size of the array.
 
-    PtrDetails(void)
-    {
-        // TODO: Implement PtrDetails
+    //PtrDetails(void)
+    //Constructor getting the pointer and a size as optional
+    //when the allocated memory is an array of size _size.
+    PtrDetails(T *_pnt, unsigned _size = 0) {
+        memPtr = _pnt;
+        arraySize = _size
+        if (_size > 0)
+            isArray = true;
     }
+
 };
 // Overloading operator== allows two class objects to be compared.
 // This is needed by the STL list class.
@@ -29,5 +35,11 @@ template <class T>
 bool operator==(const PtrDetails<T> &ob1,
                 const PtrDetails<T> &ob2)
 {
-    // TODO: Implement operator==
+    // Implementation of overloaded operator==
+    if (ob1.memPtr == ob2.memPtr) {
+        return true;
+    }
+    else {
+        return false;
+    }
 }
