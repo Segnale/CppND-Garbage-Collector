@@ -36,10 +36,5 @@ bool operator==(const PtrDetails<T> &ob1,
                 const PtrDetails<T> &ob2)
 {
     // Implementation of overloaded operator==
-    if (ob1.memPtr == ob2.memPtr) {
-        return true;
-    }
-    else {
-        return false;
-    }
+    return (ob1.memPtr == ob2.memPtr);
 }

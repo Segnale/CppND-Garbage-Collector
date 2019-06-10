@@ -147,7 +147,6 @@ bool Pointer<T, size>::collect(){
     do{
         // Scan refContainer looking for unreferenced pointers.
         for (p = refContainer.begin(); p != refContainer.end(); p++){
-            // TODO: Implement collect()
             // If in-use, skip.
             if (p->refcount > 0)
                 continue;
