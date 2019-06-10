@@ -16,7 +16,7 @@ template <class T, int size = 0>
 class Pointer{
 private:
     // refContainer maintains the garbage collection list.
-    static std::list<PtrDetails<T> > refContainer;
+    static std::list<PtrDetails<T>> refContainer;
     // addr points to the allocated memory to which
     // this Pointer pointer currently points.
     T *addr;
@@ -31,7 +31,7 @@ private:
     unsigned arraySize; // size of the array
     static bool first; // true when first Pointer is created
     // Return an iterator to pointer details in refContainer.
-    typename std::list<PtrDetails<T> >::iterator findPtrInfo(T *ptr);
+    typename std::list<PtrDetails<T>>::iterator findPtrInfo(T *ptr);
 public:
     // Define an iterator type for Pointer<T>.
     typedef Iter<T> GCiterator;
@@ -108,6 +108,8 @@ Pointer<T,size>::Pointer(T *t){
 
     // TODO: Implement Pointer constructor
     // Lab: Smart Pointer Project Lab
+    addr = t;
+
 
 }
 // Copy constructor.
@@ -175,16 +177,34 @@ bool Pointer<T, size>::collect(){
 template <class T, int size>
 T *Pointer<T, size>::operator=(T *t){
 
-    // TODO: Implement operator==
-    // LAB: Smart Pointer Project Lab
+    typename std::list<PtrDetails<T>>::iterator p;
+
+    // Increment the reference count of
+    // the new address.
+    p->refcount++;
+    // increment ref count
+    // store the address.
+    p = t;
+    // return
+    return p;
 
 }
 // Overload assignment of Pointer to Pointer.
 template <class T, int size>
 Pointer<T, size> &Pointer<T, size>::operator=(Pointer &rv){
 
-    // TODO: Implement operator==
-    // LAB: Smart Pointer Project Lab
+    typename std::list<PtrDetails<T>>::iterator p;
+    // First, decrement the reference count
+    // for the memory currently being pointed to.
+    rv->refcount--;
+    // Then, increment the reference count of
+    // the new address.
+    p->refcount++;
+    // increment ref count
+    // store the address.
+    p = rv;
+    // return
+    return p;
 
 }
 
