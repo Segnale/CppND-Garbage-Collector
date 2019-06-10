@@ -108,24 +108,38 @@ Pointer<T,size>::Pointer(T *t){
 
     // TODO: Implement Pointer constructor
     // Lab: Smart Pointer Project Lab
+    typename std::list<PtrDetails<T>>::iterator p;
+    p->refcount++;
     addr = t;
-
 
 }
 // Copy constructor.
 template< class T, int size>
 Pointer<T,size>::Pointer(const Pointer &ob){
-
-    // TODO: Implement Pointer constructor
-    // Lab: Smart Pointer Project Lab
-
+    typename std::list<PtrDetails<T>>::iterator p;
+    p = findPtrInfo(ob.addr);
+    
+    // TODO: Implement copy constructor
+    addr = ob.addr;
+    // increment ref count
+    p->refcount++;
+    // decide whether it is an array
+    arraySize = ob.arraySize
+    p.arraySize = ob.arraySize
+    if (op.size > 0)
+        isArray = true
+        p.isArray = isArray
+    else
+        isArray = false
+        p.isArray = isArray
+    
 }
 
 // Destructor for Pointer.
 template <class T, int size>
 Pointer<T, size>::~Pointer(){
     
-    typename std::list<PtrDetails<T> >::iterator p;
+    typename std::list<PtrDetails<T>>::iterator p;
     p = findPtrInfo(addr);
     if (p->refcount)
         // decrement ref count
@@ -182,7 +196,6 @@ T *Pointer<T, size>::operator=(T *t){
     // Increment the reference count of
     // the new address.
     p->refcount++;
-    // increment ref count
     // store the address.
     p = t;
     // return
@@ -194,15 +207,15 @@ template <class T, int size>
 Pointer<T, size> &Pointer<T, size>::operator=(Pointer &rv){
 
     typename std::list<PtrDetails<T>>::iterator p;
+    p = findPtrInfo(addr); 
     // First, decrement the reference count
     // for the memory currently being pointed to.
     rv->refcount--;
     // Then, increment the reference count of
     // the new address.
     p->refcount++;
-    // increment ref count
     // store the address.
-    p = rv;
+    Pointer::addr = rv.addr;
     // return
     return p;
 
@@ -234,7 +247,7 @@ void Pointer<T, size>::showlist(){
 template <class T, int size>
 typename std::list<PtrDetails<T> >::iterator
 Pointer<T, size>::findPtrInfo(T *ptr){
-    typename std::list<PtrDetails<T> >::iterator p;
+    typename std::list<PtrDetails<T>>::iterator p;
     // Find ptr in refContainer.
     for (p = refContainer.begin(); p != refContainer.end(); p++)
         if (p->memPtr == ptr)
@@ -246,7 +259,7 @@ template <class T, int size>
 void Pointer<T, size>::shutdown(){
     if (refContainerSize() == 0)
         return; // list is empty
-    typename std::list<PtrDetails<T> >::iterator p;
+    typename std::list<PtrDetails<T>>::iterator p;
     for (p = refContainer.begin(); p != refContainer.end(); p++)
     {
         // Set all reference counts to zero
