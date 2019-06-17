@@ -110,12 +110,13 @@ Pointer<T,size>::Pointer(T *t){
     // TODO: Implement Pointer constructor
     // Lab: Smart Pointer Project Lab
     typename std::list<PtrDetails<T>>::iterator p;
+    showlist();
     p = findPtrInfo(t);
     if (!p->refcount) {
-        PtrDetails<T> newP(t, 0);
+        PtrDetails<T> newP(t);
         refContainer.push_back(newP);
     }
-    p->refcount++;
+    showlist();
     
     addr = t;
     // Initialization from common pointer not holding any array information
@@ -153,12 +154,13 @@ Pointer<T, size>::~Pointer(){
     
     typename std::list<PtrDetails<T>>::iterator p;
     p = findPtrInfo(addr);
+    showlist();
     if (p->refcount)
         // decrement ref count
         p->refcount--; 
-    
     // Collect garbage when a pointer goes out of scope.
     collect();
+    showlist();
     // For real use, you might want to collect unused memory less frequently,
     // such as after refContainer has reached a certain size, after a certain number of Pointers have gone out of scope,
     // or when memory is low.
@@ -179,9 +181,10 @@ bool Pointer<T, size>::collect(){
             if (p->refcount > 0)
                 continue;
             memfreed = true;
+            showlist();
             // Remove unused entry from refContainer.
             refContainer.remove(*p);
-            
+            showlist();
             // Free memory unless the Pointer is null.
             if (p->memPtr) {
                 if (p->isArray){
@@ -204,7 +207,7 @@ template <class T, int size>
 T *Pointer<T, size>::operator=(T *t){
 
     delete this;
-    Pointer P;
+    Pointer<T> P = new T(*t);
     typename std::list<PtrDetails<T>>::iterator p;
     p = findPtrInfo(t); 
     // Increment the reference count of

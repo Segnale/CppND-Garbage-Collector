@@ -5,7 +5,7 @@ template <class T>
 class PtrDetails
 {
   public:
-    unsigned refcount; // current reference count
+    unsigned refcount = 0; // current reference count
     T *memPtr;         // pointer to allocated memory
     /* isArray is true if memPtr points
 to an allocated array. It is false
@@ -24,6 +24,7 @@ array, then arraySize contains its size */
     PtrDetails(T *_pnt, unsigned _size = 0) {
         memPtr = _pnt;
         arraySize = _size;
+        refcount = 1;
         if (_size > 0)
             isArray = true;
     }
