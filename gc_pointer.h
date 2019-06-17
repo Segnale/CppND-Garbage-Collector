@@ -111,7 +111,12 @@ Pointer<T,size>::Pointer(T *t){
     // Lab: Smart Pointer Project Lab
     typename std::list<PtrDetails<T>>::iterator p;
     p = findPtrInfo(t);
+    if (!p->refcount) {
+        PtrDetails<T> newP(t, 0);
+        refContainer.push_back(newP);
+    }
     p->refcount++;
+    
     addr = t;
     // Initialization from common pointer not holding any array information
     arraySize = 0;
@@ -198,6 +203,7 @@ bool Pointer<T, size>::collect(){
 template <class T, int size>
 T *Pointer<T, size>::operator=(T *t){
 
+    delete this;
     Pointer P;
     typename std::list<PtrDetails<T>>::iterator p;
     p = findPtrInfo(t); 
@@ -207,6 +213,7 @@ T *Pointer<T, size>::operator=(T *t){
     // store the address.
     p->memPtr = t;
     P.addr = t;
+    P.isArray = false;
     // return
     return P;
 

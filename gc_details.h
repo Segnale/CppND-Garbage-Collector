@@ -10,7 +10,7 @@ class PtrDetails
     /* isArray is true if memPtr points
 to an allocated array. It is false
 otherwise. */
-    bool isArray; // true if pointing to array
+    bool isArray = false; // true if pointing to array
     /* If memPtr is pointing to an allocated
 array, then arraySize contains its size */
     unsigned arraySize; // size of array
