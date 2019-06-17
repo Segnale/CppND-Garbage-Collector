@@ -23,7 +23,7 @@ array, then arraySize contains its size */
     //when the allocated memory is an array of size _size.
     PtrDetails(T *_pnt, unsigned _size = 0) {
         memPtr = _pnt;
-        arraySize = _size
+        arraySize = _size;
         if (_size > 0)
             isArray = true;
     }

@@ -94,7 +94,7 @@ public:
 // STATIC INITIALIZATION
 // Creates storage for the static variables
 template <class T, int size>
-std::list<PtrDetails<T> > Pointer<T, size>::refContainer;
+std::list<PtrDetails<T>> Pointer<T, size>::refContainer;
 template <class T, int size>
 bool Pointer<T, size>::first = true;
 
@@ -102,6 +102,7 @@ bool Pointer<T, size>::first = true;
 template<class T,int size>
 Pointer<T,size>::Pointer(T *t){
     // Register shutdown() as an exit function.
+    // used in case the program is terminated
     if (first)
         atexit(shutdown);
     first = false;
@@ -109,8 +110,12 @@ Pointer<T,size>::Pointer(T *t){
     // TODO: Implement Pointer constructor
     // Lab: Smart Pointer Project Lab
     typename std::list<PtrDetails<T>>::iterator p;
+    p = findPtrInfo(t);
     p->refcount++;
     addr = t;
+    // Initialization from common pointer not holding any array information
+    arraySize = 0;
+    isArray = false;
 
 }
 // Copy constructor.
@@ -124,14 +129,16 @@ Pointer<T,size>::Pointer(const Pointer &ob){
     // increment ref count
     p->refcount++;
     // decide whether it is an array
-    arraySize = ob.arraySize
-    p.arraySize = ob.arraySize
-    if (op.size > 0)
-        isArray = true
-        p.isArray = isArray
-    else
-        isArray = false
-        p.isArray = isArray
+    arraySize = ob.arraySize;
+    p->arraySize = ob.arraySize;
+    if (ob.arraySize > 0) {
+        isArray = true;
+        p->isArray = isArray;
+    }
+    else {
+        isArray = false;
+        p->isArray = isArray;
+    }
     
 }
 
@@ -191,15 +198,17 @@ bool Pointer<T, size>::collect(){
 template <class T, int size>
 T *Pointer<T, size>::operator=(T *t){
 
+    Pointer P;
     typename std::list<PtrDetails<T>>::iterator p;
-
+    p = findPtrInfo(t); 
     // Increment the reference count of
     // the new address.
     p->refcount++;
     // store the address.
-    p = t;
+    p->memPtr = t;
+    P.addr = t;
     // return
-    return p;
+    return P;
 
 }
 // Overload assignment of Pointer to Pointer.
@@ -208,17 +217,18 @@ Pointer<T, size> &Pointer<T, size>::operator=(Pointer &rv){
 
     typename std::list<PtrDetails<T>>::iterator p;
     p = findPtrInfo(addr); 
+    Pointer ptr;
     // First, decrement the reference count
     // for the memory currently being pointed to.
-    rv->refcount--;
+    p->refcount--;
     // Then, increment the reference count of
     // the new address.
-    p->refcount++;
+    // increment ref count
+    rv->refcount++;
     // store the address.
-    Pointer::addr = rv.addr;
+    ptr.addr = rv.addr;
     // return
-    return p;
-
+    return ptr;
 }
 
 // A utility function that displays refContainer.
@@ -245,7 +255,7 @@ void Pointer<T, size>::showlist(){
 }
 // Find a pointer in refContainer.
 template <class T, int size>
-typename std::list<PtrDetails<T> >::iterator
+typename std::list<PtrDetails<T>>::iterator
 Pointer<T, size>::findPtrInfo(T *ptr){
     typename std::list<PtrDetails<T>>::iterator p;
     // Find ptr in refContainer.
