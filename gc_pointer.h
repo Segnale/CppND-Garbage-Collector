@@ -116,6 +116,9 @@ Pointer<T,size>::Pointer(T *t){
         PtrDetails<T> newP(t);
         refContainer.push_back(newP);
     }
+    else {
+        p->refcount++;
+    }
     showlist();
     
     addr = t;
@@ -154,13 +157,11 @@ Pointer<T, size>::~Pointer(){
     
     typename std::list<PtrDetails<T>>::iterator p;
     p = findPtrInfo(addr);
-    showlist();
     if (p->refcount)
         // decrement ref count
         p->refcount--; 
     // Collect garbage when a pointer goes out of scope.
     collect();
-    showlist();
     // For real use, you might want to collect unused memory less frequently,
     // such as after refContainer has reached a certain size, after a certain number of Pointers have gone out of scope,
     // or when memory is low.
@@ -181,10 +182,7 @@ bool Pointer<T, size>::collect(){
             if (p->refcount > 0)
                 continue;
             memfreed = true;
-            showlist();
-            // Remove unused entry from refContainer.
-            refContainer.remove(*p);
-            showlist();
+            
             // Free memory unless the Pointer is null.
             if (p->memPtr) {
                 if (p->isArray){
@@ -194,6 +192,8 @@ bool Pointer<T, size>::collect(){
                     delete p->memPtr; // delete single element
                 }
             }
+            // Remove unused entry from refContainer.
+            refContainer.remove(*p);
             // Restart the search.
             break;
         }
@@ -207,18 +207,25 @@ template <class T, int size>
 T *Pointer<T, size>::operator=(T *t){
 
     delete this;
-    Pointer<T> P = new T(*t);
+    //Pointer<T> P = new T(*t);
     typename std::list<PtrDetails<T>>::iterator p;
     p = findPtrInfo(t); 
     // Increment the reference count of
     // the new address.
-    p->refcount++;
+    showlist();
+    if (!p->refcount) {
+        PtrDetails<T> newP(t);
+        refContainer.push_back(newP);
+    }
+    else {
+        p->refcount++;
+    }
     // store the address.
-    p->memPtr = t;
-    P.addr = t;
-    P.isArray = false;
+    showlist();
+    this->addr = t;
+    this->isArray = false;
     // return
-    return P;
+    return *this;
 
 }
 // Overload assignment of Pointer to Pointer.
